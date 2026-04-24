@@ -4,6 +4,9 @@ const router = express.Router();
 const ShipController = require('../controllers/ship.controller');
 const { validateShip, validateShipIdParam } = require('../middlewares/validation');
 
+router.get('/', (req,res) => {
+    res.send({message: "welcome to api"})
+})
 router.post('/ships/update', validateShip, ShipController.update);
 router.get('/ships', ShipController.getAll);
 router.get('/ships/:id', validateShipIdParam, ShipController.getOne);
