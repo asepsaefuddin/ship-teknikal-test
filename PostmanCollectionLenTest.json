@@ -1,0 +1,191 @@
+{
+  "info": {
+    "_postman_id": "d3d4b083-fefd-4ecb-a8d8-5b70e6eb39bd",
+    "name": "Ship Navigation Data Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection for Backend Engineer Test 2026 - Ship Navigation Data Service."
+  },
+  "item": [
+    {
+      "name": "Health Check (Ships List)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ships",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ships"
+          ]
+        },
+        "description": "Check server availability by fetching current ships."
+      }
+    },
+    {
+      "name": "Create or Update Ship (Latest Timestamp)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"{{shipId}}\",\n  \"name\": \"Kapal Nusantara\",\n  \"lat\": -6.2,\n  \"lng\": 106.8,\n  \"heading\": 370,\n  \"speed\": 25,\n  \"timestamp\": 1710000200\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ships/update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ships",
+            "update"
+          ]
+        },
+        "description": "Create new ship if not exists, otherwise update current state."
+      }
+    },
+    {
+      "name": "Out-of-Order Update (Older Timestamp)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"{{shipId}}\",\n  \"name\": \"Kapal Nusantara\",\n  \"lat\": -6.15,\n  \"lng\": 106.75,\n  \"heading\": 15,\n  \"speed\": 20,\n  \"timestamp\": 1710000000\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ships/update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ships",
+            "update"
+          ]
+        },
+        "description": "Send older timestamp to verify out-of-order handling and distance consistency."
+      }
+    },
+    {
+      "name": "Invalid Payload (Negative Speed)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"{{shipId}}\",\n  \"lat\": -6.2,\n  \"lng\": 106.8,\n  \"heading\": 40,\n  \"speed\": -1,\n  \"timestamp\": 1710000300\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/ships/update",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ships",
+            "update"
+          ]
+        },
+        "description": "Expect HTTP 400 validation error."
+      }
+    },
+    {
+      "name": "Get All Ships",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ships",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ships"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get One Ship",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ships/{{shipId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ships",
+            "{{shipId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Ship History",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ships/{{shipId}}/history",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ships",
+            "{{shipId}}",
+            "history"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Stream Updates (SSE)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "text/event-stream"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/stream",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "stream"
+          ]
+        },
+        "description": "Open SSE stream. Keep request open to receive updates after calling /ships/update."
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "shipId",
+      "value": "ship-1"
+    }
+  ]
+}
