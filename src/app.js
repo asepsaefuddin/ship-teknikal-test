@@ -1,5 +1,4 @@
 const express = require('express');
-const serverless = require('serverless-http');
 
 const app = express();
 const shipRoutes = require('./routes/ship.routes');
@@ -11,6 +10,13 @@ let clients = [];
 
 // SSE endpoint
 app.get('/stream', (req, res) => {
+  if (process.env.VERCEL === '1') {
+    return res.status(501).json({
+      success: false,
+      message: 'SSE is not supported on Vercel Serverless. Use polling or external realtime service.'
+    });
+  }
+
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
@@ -28,4 +34,4 @@ app.get('/stream', (req, res) => {
 });
 
 
-module.exports = serverless(app);
+module.exports = { app, clients };
