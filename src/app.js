@@ -1,4 +1,6 @@
 const express = require('express');
+const serverless = require('serverless-http');
+
 const app = express();
 const shipRoutes = require('./routes/ship.routes');
 
@@ -7,6 +9,7 @@ app.use('/', shipRoutes);
 
 let clients = [];
 
+// SSE endpoint
 app.get('/stream', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
@@ -24,4 +27,5 @@ app.get('/stream', (req, res) => {
   });
 });
 
-module.exports = { app, clients };
+
+module.exports = serverless(app);
